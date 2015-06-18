@@ -4,13 +4,11 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.example.kshaikh.photogallery.common.SingleFragmentActivity;
+import com.example.kshaikh.photogallery.services.FlickrFetchr;
 
 
 public class PhotoGalleryActivity extends SingleFragmentActivity {
@@ -40,7 +38,7 @@ public class PhotoGalleryActivity extends SingleFragmentActivity {
 
             PreferenceManager.getDefaultSharedPreferences(this)
                     .edit()
-                    .putString(PhotoGalleryFragment.PREF_SEARCH_QUERY, query)
+                    .putString(FlickrFetchr.PREF_SEARCH_QUERY, query)
                     .commit();
             fragment.updateItems();
         }
