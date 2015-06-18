@@ -29,24 +29,23 @@ public class FlickrFetchr {
     private static final String API_KEY = "f8715392b7d3f143cfff363cbfce7aa9";
 
     private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
+    private static final String METHOD_SEARCH = "flickr.photos.search";
+
     private static final String PARAM_EXTRAS = "extras";
     private static final String EXTRA_SMALL_URL = "url_s";
+
     private static final String PARAM_FORMAT = "format";
     private static final String FORMAT_JSON = "json";
+
     private static final String PARAM_NOJSON_CALLBACK = "nojsoncallback";
+    private static final String PARAM_TEXT = "text";
 
     private static final String JSON_PHOTO_OBJECT = "photos";
     private static final String JSON_PHOTO_ARRAY = "photo";
 
-    public ArrayList<GalleryItem> fetchItems() {
+
+    public ArrayList<GalleryItem> downloadGalleryItems(String url) {
         try {
-            String url = Uri.parse(ENDPOINT).buildUpon()
-                    .appendQueryParameter("method", METHOD_GET_RECENT)
-                    .appendQueryParameter("api_key", API_KEY)
-                    .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
-                    .appendQueryParameter(PARAM_FORMAT, FORMAT_JSON)
-                    .appendQueryParameter(PARAM_NOJSON_CALLBACK, "1")
-                    .build().toString();
             String dataString = getUrl(url);
             Log.i(TAG, "Received flickr data: " + dataString);
             return parsePhotoItems(dataString);
@@ -54,6 +53,33 @@ public class FlickrFetchr {
             Log.e(TAG, "Failed to fetch items", ioe);
         }
         return null;
+    }
+
+    public ArrayList<GalleryItem> fetchItems() {
+        Log.i(TAG, "Fetching items");
+        String url = Uri.parse(ENDPOINT).buildUpon()
+                .appendQueryParameter("method", METHOD_GET_RECENT)
+                .appendQueryParameter("api_key", API_KEY)
+                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+                .appendQueryParameter(PARAM_FORMAT, FORMAT_JSON)
+                .appendQueryParameter(PARAM_NOJSON_CALLBACK, "1")
+                .build().toString();
+
+        return downloadGalleryItems(url);
+    }
+
+    public ArrayList<GalleryItem> search(String query) {
+        Log.i(TAG, "Search items with query: " + query);
+        String url = Uri.parse(ENDPOINT).buildUpon()
+                .appendQueryParameter("method", METHOD_SEARCH)
+                .appendQueryParameter("api_key", API_KEY)
+                .appendQueryParameter(PARAM_TEXT, query)
+                .appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+                .appendQueryParameter(PARAM_FORMAT, FORMAT_JSON)
+                .appendQueryParameter(PARAM_NOJSON_CALLBACK, "1")
+                .build().toString();
+
+        return downloadGalleryItems(url);
     }
 
     ArrayList<GalleryItem> parsePhotoItems(String dataString) {
